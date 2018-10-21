@@ -34,8 +34,13 @@ mountroot()
 	mount -n -o move $rootmnt /root-real
 	mkdir -m 0700 $rootmnt
 
-	squashfs_file="/root-real${DARCH_DIR_PATH}/${DARCH_ROOTFS}"
-	mount -t squashfs "${squashfs_file}" $rootmnt
+	# Build the overlay directories and mount them.
+	mkdir -m 0755 -p /run/darch/squashro
+	mkdir -m 0755 -p /run/darch/squashrw
+	mount -t squashfs "/root-real${DARCH_DIR_PATH}/${DARCH_ROOTFS}" /run/darch/squashro
+	mount -t tmpfs -o rw,noatime,mode=755 tmpfs /run/darch/squashrw
+	mkdir -p /run/darch/squashrw/upperdir /run/darch/squashrw/work
+	mount -t overlay overlay -o "lowerdir=/run/darch/squashro,upperdir=/run/darch/squashrw/upperdir,workdir=/run/darch/squashrw/work" "$rootmnt"
 
 	maybe_break darch
 }
