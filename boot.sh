@@ -8,4 +8,4 @@ qemu-system-x86_64 \
     --kernel $ROOTFS/boot/vmlinuz-4.9.0-7-amd64 \
     --append "console=ttyS0 boot=darch root=/dev/sda debug break" \
     --serial mon:stdio \
-    --drive "file=$ROOTIMG,format=qcow2"
+    --drive "file=$BOOTIMG,format=qcow2"

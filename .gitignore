@@ -1,2 +1,4 @@
 rootfs/
-rootfs.ext2.qcow2
+rootfs.squashfs
+boot/
+boot.ext2.qcow2
