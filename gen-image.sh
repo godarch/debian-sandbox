@@ -2,7 +2,8 @@
 
 . ./.vars.sh
 
-cp $DIR/darch $ROOTFS/usr/share/initramfs-tools/scripts/darch
+cp $DIR/darch-script $ROOTFS/usr/share/initramfs-tools/scripts/darch
+cp $DIR/darch-hook $ROOTFS/usr/share/initramfs-tools/hooks/darch
 chroot $ROOTFS update-initramfs -u
 
 # https://stackoverflow.com/questions/6710555/how-to-use-qemu-to-run-a-non-gui-os-on-the-terminal

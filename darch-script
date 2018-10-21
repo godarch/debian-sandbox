@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# echo	'Loading Linux linux ...'
+# linux	darch_dir=UUID=a85bf1c9-59a1-4dba-9df9-6fbbfa03466c:/var/lib/darch/stage/live/h42milg9c1r2jqr02ch8q1r3x
+# echo	'Loading initial ramdisk ...'
+
+export DARCH_ROOTFS=
+export DARCH_DIR=
+
+for x in $(cat /proc/cmdline); do
+	case $x in
+	darch_rootfs=*)
+		DARCH_ROOTFS=${x#root=}
+		;;
+	darch_dir=*)
+		DARCH_DIR="-o ${x#darch_dir=}"
+		;;
+	esac
+done
+
+export DARCH_DIR_PATH=`echo $DARCH_DIR | sed 's/.*\://g'`
+export DARCH_DIR_DEVICE=`echo $DARCH_DIR | sed 's/:.*//'`
+
+export ROOT=$DARCH_DIR_DEVICE
+
+mountroot()
+{
+	# initramfs-tools entry point for live-boot is mountroot(); function
+	maybe_break darch
+	local_mount_root
+}
