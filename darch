@@ -1,0 +1,10 @@
+#!/bin/sh
+
+mountroot()
+{
+	# initramfs-tools entry point for live-boot is mountroot(); function
+	echo "Testt"
+	ls /root
+	local_mount_root
+	ls /root
+}
