@@ -10,17 +10,16 @@ export DARCH_DIR=
 for x in $(cat /proc/cmdline); do
 	case $x in
 	darch_rootfs=*)
-		DARCH_ROOTFS=${x#root=}
+		DARCH_ROOTFS=${x#darch_rootfs=}
 		;;
 	darch_dir=*)
-		DARCH_DIR="-o ${x#darch_dir=}"
+		DARCH_DIR=${x#darch_dir=}
 		;;
 	esac
 done
 
 export DARCH_DIR_PATH=`echo $DARCH_DIR | sed 's/.*\://g'`
 export DARCH_DIR_DEVICE=`echo $DARCH_DIR | sed 's/:.*//'`
-
 export ROOT=$DARCH_DIR_DEVICE
 
 mountroot()
@@ -28,4 +27,15 @@ mountroot()
 	# initramfs-tools entry point for live-boot is mountroot(); function
 	maybe_break darch
 	local_mount_root
+
+	# Move the root that was mounted to another directory so
+	# that we can mount the squashfs image on the /root directory.
+	mkdir -m 0700 /root-real
+	mount -n -o move $rootmnt /root-real
+	mkdir -m 0700 $rootmnt
+
+	squashfs_file="/root-real${DARCH_DIR_PATH}/${DARCH_ROOTFS}"
+	mount -t squashfs "${squashfs_file}" $rootmnt
+
+	maybe_break darch
 }
