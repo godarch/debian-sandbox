@@ -24,8 +24,7 @@ export ROOT=$DARCH_DIR_DEVICE
 
 mountroot()
 {
-	# initramfs-tools entry point for live-boot is mountroot(); function
-	maybe_break darch
+	# Mount the $ROOT parameter to $rootmnt, we will move it later.
 	local_mount_root
 
 	# Move the root that was mounted to another directory so
@@ -41,6 +40,20 @@ mountroot()
 	mount -t tmpfs -o rw,noatime,mode=755 tmpfs /run/darch/squashrw
 	mkdir -p /run/darch/squashrw/upperdir /run/darch/squashrw/work
 	mount -t overlay overlay -o "lowerdir=/run/darch/squashro,upperdir=/run/darch/squashrw/upperdir,workdir=/run/darch/squashrw/work" "$rootmnt"
+
+	maybe_break darch
+
+	# Run the hooks for the image
+	darch_hooks_dir="/root-real${DARCH_DIR_PATH}/hooks"
+	if [ -e "$darch_hooks_dir" ]; then
+    	for hook_dir in $darch_hooks_dir/*; do
+        	hook_name=`basename ${hook_dir}`
+        	export DARCH_ROOT_FS="${rootmnt}"
+        	export DARCH_HOOK_DIR="${darch_hooks_dir}/${hook_name}"
+
+        	/bin/sh -c ". $DARCH_HOOK_DIR/hook && run"
+    	done
+	fi
 
 	maybe_break darch
 }

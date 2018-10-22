@@ -11,6 +11,8 @@ chroot $ROOTFS update-initramfs -u
 rm -rf $BOOTFS
 mkdir -p $BOOTFS/image/dir
 cp $ROOTIMG $BOOTFS/image/dir
+mkdir -p $BOOTFS/image/dir/hooks/test-hook
+cp $DIR/test-hook $BOOTFS/image/dir/hooks/test-hook/hook
 virt-make-fs \
     --format qcow2 \
     --size +1G \

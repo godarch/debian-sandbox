@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+help() {
+    echo "Help..."
+}
+
+install() {
+    echo "INSTALL"
+}
+
+run() {
+    echo "hello from hook" > $DARCH_ROOT_FS/testffffe
+}
